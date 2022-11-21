@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * web3j property container.
+ * @author github.com/x-saofen
  */
 @ConfigurationProperties(prefix = "web3service.web3j")
 @Data

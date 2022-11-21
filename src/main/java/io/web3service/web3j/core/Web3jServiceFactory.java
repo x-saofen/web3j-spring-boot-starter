@@ -14,15 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author github.com/x-saofen
+ */
 @Slf4j
 public class Web3jServiceFactory {
 
+
+    private static class Constant{
+        public static final String EMPTY = "";
+        public static final String HTTP = "HTTP";
+        public static final String OS_NAME = "os.name";
+
+        public static final String WIN = "win";
+    }
 
     /**
      *  build Web3jService
      * @param list      clientAddress
      * @param timeout   http timeout
-     * @return
+     * @return  Web3jNetworkService list
      */
     public static List<Web3jNetworkService> buildServiceList(List<String> list, Long timeout){
         Assert.isTrue(!CollectionUtils.isEmpty(list), "Web3j client address must not be null");
@@ -33,17 +44,17 @@ public class Web3jServiceFactory {
 
     /**
      * copy www.web3labs.com
-     * @param clientAddress
+     * @param clientAddress network address
      * @see <a href="https://github.com/web3j/web3j-spring-boot-starter/blob/master/src/main/java/org/web3j/spring/autoconfigure/Web3jAutoConfiguration.java">Source code address</a>
-     * @return
+     * @return  Web3jService
      */
     public static Web3jService buildService(String clientAddress, Long timeout){
         Web3jService web3jService;
-        if (clientAddress == null || clientAddress.equals("")) {
+        if (clientAddress == null || clientAddress.equals(Constant.EMPTY)) {
             web3jService = new HttpService(createOkHttpClient(timeout));
-        } else if (clientAddress.startsWith("http")) {
+        } else if (clientAddress.startsWith(Constant.HTTP)) {
             web3jService = new HttpService(clientAddress, createOkHttpClient(timeout), false);
-        } else if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+        } else if (System.getProperty(Constant.OS_NAME).toLowerCase().startsWith(Constant.WIN)) {
             web3jService = new WindowsIpcService(clientAddress);
         } else {
             web3jService = new UnixIpcService(clientAddress);
@@ -54,7 +65,7 @@ public class Web3jServiceFactory {
     /**
      * copy www.web3labs.com
      * @see <a href="https://github.com/web3j/web3j-spring-boot-starter/blob/master/src/main/java/org/web3j/spring/autoconfigure/Web3jAutoConfiguration.java">Source code address</a>
-     * @return
+     * @return  OkHttpClient
      */
     private static OkHttpClient createOkHttpClient(Long timeout) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -66,7 +77,6 @@ public class Web3jServiceFactory {
     /**
      * copy www.web3labs.com
      * @see <a href="https://github.com/web3j/web3j-spring-boot-starter/blob/master/src/main/java/org/web3j/spring/autoconfigure/Web3jAutoConfiguration.java">Source code address</a>
-     * @return
      */
     private static void configureTimeouts(OkHttpClient.Builder builder, Long timeout) {
         if (timeout != null) {
@@ -80,7 +90,6 @@ public class Web3jServiceFactory {
     /**
      * copy www.web3labs.com
      * @see <a href="https://github.com/web3j/web3j-spring-boot-starter/blob/master/src/main/java/org/web3j/spring/autoconfigure/Web3jAutoConfiguration.java">Source code address</a>
-     * @return
      */
     private static void configureLogging(OkHttpClient.Builder builder) {
         if (log.isDebugEnabled()) {

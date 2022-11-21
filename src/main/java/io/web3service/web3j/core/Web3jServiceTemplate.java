@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author github.com/x-saofen
+ */
 public class Web3jServiceTemplate {
 
     private Web3jServiceTemplate(){}
@@ -16,7 +19,7 @@ public class Web3jServiceTemplate {
 
     @Getter
     public static class Build{
-        private Web3jServiceTemplate web3jServiceTemplate = new Web3jServiceTemplate();
+        private final Web3jServiceTemplate web3jServiceTemplate = new Web3jServiceTemplate();
 
         public Build buildServiceList(List<Web3jNetworkService> web3jService, String network){
             web3jServiceTemplate.appendWeb3jServiceList(web3jService, network);
@@ -24,9 +27,9 @@ public class Web3jServiceTemplate {
         }
     }
 
-    private Map<String, List<Web3jNetworkService>> networkConnectors = new ConcurrentHashMap<>();
-    private Map<String, AtomicInteger> atomicLongMap = new HashMap<>();
-    private Map<String, Integer> serviceSizeMap = new HashMap<>();
+    private final Map<String, List<Web3jNetworkService>> networkConnectors = new ConcurrentHashMap<>();
+    private final Map<String, AtomicInteger> atomicLongMap = new HashMap<>();
+    private final Map<String, Integer> serviceSizeMap = new HashMap<>();
 
     private synchronized void appendWeb3jServiceList(List<Web3jNetworkService> web3jService, String network) {
         List<Web3jNetworkService> networkServices = networkConnectors.get(network);

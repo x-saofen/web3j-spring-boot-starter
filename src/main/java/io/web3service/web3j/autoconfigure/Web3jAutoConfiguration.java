@@ -13,13 +13,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.Web3jService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * @author github.com/x-saofen
+ */
 @Slf4j
 @AllArgsConstructor
 @Configuration
