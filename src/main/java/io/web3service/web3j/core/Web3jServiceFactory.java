@@ -23,7 +23,7 @@ public class Web3jServiceFactory {
 
     private static class Constant{
         public static final String EMPTY = "";
-        public static final String HTTP = "HTTP";
+        public static final String HTTP = "http";
         public static final String OS_NAME = "os.name";
 
         public static final String WIN = "win";
@@ -38,7 +38,7 @@ public class Web3jServiceFactory {
     public static List<Web3jNetworkService> buildServiceList(List<String> list, Long timeout){
         Assert.isTrue(!CollectionUtils.isEmpty(list), "Web3j client address must not be null");
         List<Web3jNetworkService> result = new ArrayList<>(list.size());
-        list.forEach( clientAddress ->  result.add(new Web3jNetworkService(buildService(clientAddress, timeout))));
+        list.forEach( clientAddress ->  result.add(new Web3jNetworkService(buildService(clientAddress, timeout), timeout)));
         return result;
     }
 
