@@ -1,8 +1,12 @@
 # web3j-spring-boot-starter
 
->Web3j-core: 5.0.0
+>Web3j-core: 4.9.5
 >
 >SpringBoot: 2.7.5
+
+
+
+[SimpleDemo](https://github.com/x-saofen/web3j-spring-boot-starter/tree/master/src/test/java/io/web3service/web3j/demo/Web3jNetworkServiceSimpleDemo.java)
 
 
 
@@ -18,7 +22,7 @@
 
 ## Getting started
 
-
+pom dependency
 
 ```xml
 <dependency>
@@ -32,13 +36,28 @@
    <version>4.3.1</version>
 </dependency>
 ```
+application.yml
 
 ```yaml
-# application.yml
 web3service:
   web3j:
     http-timeout-seconds: 30
     network:
-    	# 链网络: [url,url]
+      # 链网络: [url,url]
       polygon-testnet: https://matic-mumbai.chainstacklabs.com
+      bsc-testnet: https://data-seed-prebsc-1-s1.binance.org:8545/
 ```
+
+java
+
+```java
+@Autowired
+private Web3jServiceTemplate web3jServiceTemplate;
+
+public Long getChainId(){
+  Web3jNetworkService service = web3jServiceTemplate.getNextTemplate(network);
+  return service.getChainId();
+}
+
+```
+

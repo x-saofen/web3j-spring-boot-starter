@@ -1,5 +1,6 @@
 package io.web3service.web3j.core;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
@@ -19,11 +20,12 @@ import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.JsonRpc2_0Web3j;
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthCall;
-import org.web3j.protocol.core.methods.response.EthChainId;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.*;
+import org.web3j.tx.Transfer;
+import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -31,10 +33,10 @@ import java.util.concurrent.ExecutionException;
 /**
  * @author github.com/x-saofen
  */
-@SuppressWarnings("all")
 @Slf4j
 public class Web3jNetworkService extends JsonRpc2_0Web3j {
 
+    @Getter
     private Long defaultTimeOut = 5L;
 
     public Web3jNetworkService(Web3jService web3jService, Long httpTimeOut) {
@@ -46,13 +48,13 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
 
     private EthChainId chainId;
 
-    @SneakyThrows({ExecutionException.class, InterruptedException.class })
+    @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public Long getChainId() {
-        if(Objects.nonNull(chainId)){
+        if (Objects.nonNull(chainId)) {
             return chainId.getChainId().longValue();
         }
-        synchronized(this){
-            if(Objects.nonNull(chainId)){
+        synchronized (this) {
+            if (Objects.nonNull(chainId)) {
                 return chainId.getChainId().longValue();
             }
             chainId = super.ethChainId().sendAsync().get();
@@ -69,8 +71,6 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
         private static final String BALANCES_OF = "balanceOf";
         private static final String DECIMALS = "decimals";
         private static final String SYMBOL = "symbol";
-        private static final String APPROVAL = "approval";
-        private static final String DECREASE_APPROVAL = "decreaseApproval";
         private static final String ALLOWANCE = "allowance";
         private static final String TRANSFER = "transfer";
 
@@ -232,13 +232,13 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
     /**
      * send transaction
      *
-     * @param credentials wallet
-     * @param toAddress   to address
-     * @param gasPrice    gas
-     * @param gasLimit    gas limit
-     * @param nonce       nonce
-     * @param value       amount
-     * @param contractAddress    contract address
+     * @param credentials     wallet
+     * @param toAddress       to address
+     * @param gasPrice        gas
+     * @param gasLimit        gas limit
+     * @param nonce           nonce
+     * @param value           amount
+     * @param contractAddress contract address
      * @return EthSendTransaction
      */
     @SneakyThrows(Exception.class)
@@ -258,6 +258,88 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
         return sendTransaction(rawTransaction, credentials, chainId);
     }
 
+    /**
+     * getBaseFeePerGas
+     * @return baseFeePerGas
+     */
+    @SneakyThrows(Exception.class)
+    public BigInteger getBaseFeePerGas() {
+        return super.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).sendAsync().get().getResult().getBaseFeePerGas();
+    }
 
+    /**
+     * getMaxPriorityFeePerGas
+     * @return  maxPriorityFeePerGas
+     */
+    @SneakyThrows(Exception.class)
+    public BigInteger getMaxPriorityFeePerGas() {
+        EthTransaction ethTransaction = super.ethGetTransactionByBlockNumberAndIndex(DefaultBlockParameterName.LATEST, BigInteger.ONE).sendAsync().get();
+        org.web3j.protocol.core.methods.response.Transaction result = ethTransaction.getResult();
+        return result.getMaxPriorityFeePerGas();
+    }
+
+    /**
+     * default max fee
+     * @param baseFeePerGas             baseFeePerGas
+     * @param maxPriorityFeePerGas  maxPriorityFeePerGas
+     * @return defaultMaxFeePerGas
+     */
+    @SneakyThrows(Exception.class)
+    private BigInteger getDefaultMaxFeePerGas(BigInteger baseFeePerGas, BigInteger maxPriorityFeePerGas) {
+        return baseFeePerGas.multiply(BigInteger.valueOf(2)).add(maxPriorityFeePerGas);
+    }
+
+    /**
+     * default max fee
+     * @return defaultMaxFeePerGas
+     */
+    @SneakyThrows(Exception.class)
+    public BigInteger getDefaultMaxFeePerGas() {
+        return getDefaultMaxFeePerGas(getBaseFeePerGas(), getMaxPriorityFeePerGas());
+    }
+
+    /**
+     * EIP-1559 transaction
+     *
+     * @param credentials wallet
+     * @param toAddress   to address
+     * @param value       amount
+     * @param unit        unit
+     * @return
+     */
+    @SneakyThrows(Exception.class)
+    public TransactionReceipt simpleEIP1559Transfer(Credentials credentials, String toAddress, BigDecimal value, Convert.Unit unit) {
+        BigInteger baseFeePerGas = getBaseFeePerGas();
+        BigInteger maxPriorityFeePerGas = getMaxPriorityFeePerGas();
+        BigInteger defaultMaxFeePerGas = getDefaultMaxFeePerGas(baseFeePerGas, maxPriorityFeePerGas);
+        return Transfer.sendFundsEIP1559(this, credentials, toAddress, value, unit, BigInteger.valueOf(21000), maxPriorityFeePerGas, defaultMaxFeePerGas).sendAsync().get();
+    }
+
+
+    /**
+     * simple EIP1559 transfer
+     * @param contractAddress   contractAddress
+     * @param credentials       wallet
+     * @param toAddress to address
+     * @param value     amount
+     * @param unit  amount unit
+     * @param gasLimit  gas limiy
+     * @param nonce     nonce
+     * @return  EthSendTransaction
+     */
+    @SneakyThrows(Exception.class)
+    public EthSendTransaction simpleEIP1559Transfer(String contractAddress, Credentials credentials, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit, BigInteger nonce) {
+        Function function = new Function(
+                Constant.TRANSFER,
+                Arrays.asList(new Address(toAddress), new Uint256(Convert.toWei(value, unit).toBigInteger())),
+                Collections.singletonList(new TypeReference<Type>() {
+                }));
+        String encodedFunction = FunctionEncoder.encode(function);
+        BigInteger baseFeePerGas = getBaseFeePerGas();
+        BigInteger maxPriorityFeePerGas = getMaxPriorityFeePerGas();
+        BigInteger defaultMaxFeePerGas = getDefaultMaxFeePerGas(baseFeePerGas, maxPriorityFeePerGas);
+        RawTransaction rawTransaction = RawTransaction.createTransaction(getChainId(), nonce, gasLimit, contractAddress, BigInteger.ZERO, encodedFunction, maxPriorityFeePerGas, defaultMaxFeePerGas);
+        return sendTransaction(rawTransaction, credentials, getChainId());
+    }
 
 }

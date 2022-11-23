@@ -16,7 +16,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <lombook.version>1.18.24</lombook.version>
         <spring-boot.version>2.7.5</spring-boot.version>
-        <web3j.core.version>5.0.0</web3j.core.version>
+        <web3j.core.version>4.9.5</web3j.core.version>
         <squareup.okhttp.version>4.3.1</squareup.okhttp.version>
     </properties>
 
@@ -86,11 +86,6 @@
             <version>${web3j.core.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>${squareup.okhttp.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
