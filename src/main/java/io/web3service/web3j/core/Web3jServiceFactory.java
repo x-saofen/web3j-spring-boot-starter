@@ -38,7 +38,13 @@ public class Web3jServiceFactory {
     public static List<Web3jNetworkService> buildServiceList(List<String> list, Long timeout){
         Assert.isTrue(!CollectionUtils.isEmpty(list), "Web3j client address must not be null");
         List<Web3jNetworkService> result = new ArrayList<>(list.size());
-        list.forEach( clientAddress ->  result.add(new Web3jNetworkService(buildService(clientAddress, timeout), timeout)));
+        list.forEach( clientAddress -> {
+            try {
+                result.add(new Web3jNetworkService(buildService(clientAddress, timeout), timeout));
+            } catch (Exception e) {
+                log.error("Web3j chain ID query err.", e);
+            }
+        });
         return result;
     }
 
