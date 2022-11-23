@@ -260,6 +260,7 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
 
     /**
      * getBaseFeePerGas
+     *
      * @return baseFeePerGas
      */
     @SneakyThrows(Exception.class)
@@ -269,7 +270,8 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
 
     /**
      * getMaxPriorityFeePerGas
-     * @return  maxPriorityFeePerGas
+     *
+     * @return maxPriorityFeePerGas
      */
     @SneakyThrows(Exception.class)
     public BigInteger getMaxPriorityFeePerGas() {
@@ -280,8 +282,9 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
 
     /**
      * default max fee
-     * @param baseFeePerGas             baseFeePerGas
-     * @param maxPriorityFeePerGas  maxPriorityFeePerGas
+     *
+     * @param baseFeePerGas        baseFeePerGas
+     * @param maxPriorityFeePerGas maxPriorityFeePerGas
      * @return defaultMaxFeePerGas
      */
     @SneakyThrows(Exception.class)
@@ -291,6 +294,7 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
 
     /**
      * default max fee
+     *
      * @return defaultMaxFeePerGas
      */
     @SneakyThrows(Exception.class)
@@ -318,14 +322,15 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
 
     /**
      * simple EIP1559 transfer
-     * @param contractAddress   contractAddress
-     * @param credentials       wallet
-     * @param toAddress to address
-     * @param value     amount
-     * @param unit  amount unit
-     * @param gasLimit  gas limiy
-     * @param nonce     nonce
-     * @return  EthSendTransaction
+     *
+     * @param contractAddress contractAddress
+     * @param credentials     wallet
+     * @param toAddress       to address
+     * @param value           amount
+     * @param unit            amount unit
+     * @param gasLimit        gas limiy
+     * @param nonce           nonce
+     * @return EthSendTransaction
      */
     @SneakyThrows(Exception.class)
     public EthSendTransaction simpleEIP1559Transfer(String contractAddress, Credentials credentials, String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasLimit, BigInteger nonce) {

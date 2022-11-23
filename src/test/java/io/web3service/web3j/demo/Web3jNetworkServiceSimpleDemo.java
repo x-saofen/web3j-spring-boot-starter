@@ -18,7 +18,8 @@ import java.util.Objects;
 
 
 /**
- *  Test
+ * Test
+ *
  * @author github.com/x-saofen
  */
 @Slf4j
@@ -35,7 +36,7 @@ public class Web3jNetworkServiceSimpleDemo {
     public static void main(String[] args) {
     }
 
-    private static void bscReadFunctions(){
+    private static void bscReadFunctions() {
         log.info("#### Chain Id: {}", BSC_NETWORK_SERVICE.getChainId());
         log.info("#### ERC20 Contract name: {}", BSC_NETWORK_SERVICE.getContractName(BSC_CONTRACT));
         log.info("#### ERC20 Contract symbol: {}", BSC_NETWORK_SERVICE.getErc20ContractSymbol(BSC_CONTRACT));
@@ -44,7 +45,7 @@ public class Web3jNetworkServiceSimpleDemo {
         log.info("#### ERC20 Contract balances: {}", BSC_NETWORK_SERVICE.getErc20ContractBalancesOf(BSC_CONTRACT, TO_ADDRESS));
     }
 
-    private static void polygonReadFunctions(){
+    private static void polygonReadFunctions() {
         log.info("#### Chain Id: {}", POLYGON_NETWORK_SERVICE.getChainId());
         log.info("#### ERC20 Contract name: {}", POLYGON_NETWORK_SERVICE.getContractName(POLYGON_CONTRACT));
         log.info("#### ERC20 Contract symbol: {}", POLYGON_NETWORK_SERVICE.getErc20ContractSymbol(POLYGON_CONTRACT));
@@ -55,9 +56,9 @@ public class Web3jNetworkServiceSimpleDemo {
 
 
     @SneakyThrows
-    private static void checkTxHash(String hash, Web3jNetworkService web3j){
+    private static void checkTxHash(String hash, Web3jNetworkService web3j) {
         EthGetTransactionReceipt transactionReceipt = null;
-        while (Objects.isNull(transactionReceipt) || Objects.isNull(transactionReceipt.getResult())){
+        while (Objects.isNull(transactionReceipt) || Objects.isNull(transactionReceipt.getResult())) {
             transactionReceipt = web3j.ethGetTransactionReceipt(hash).sendAsync().get();
             Thread.sleep(1000L);
         }
@@ -65,26 +66,26 @@ public class Web3jNetworkServiceSimpleDemo {
     }
 
     @SneakyThrows
-    private static void bscSimpleTransfer(){
+    private static void bscSimpleTransfer() {
         BigInteger gasPrice = BSC_NETWORK_SERVICE.ethGasPrice().sendAsync().get().getGasPrice();
         BigInteger nonce = BSC_NETWORK_SERVICE.ethGetTransactionCount(CREDENTIALS.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get().getTransactionCount();
         BigInteger value = Convert.toWei("0.1", Convert.Unit.ETHER).toBigInteger();
         EthSendTransaction ethSendTransaction = BSC_NETWORK_SERVICE.simpleTransfer(CREDENTIALS, TO_ADDRESS, gasPrice, BigInteger.valueOf(21000), nonce, value, null);
         log.info("Tx hash: {}", ethSendTransaction.getTransactionHash());
-        if(Objects.isNull(ethSendTransaction.getTransactionHash())){
+        if (Objects.isNull(ethSendTransaction.getTransactionHash())) {
             throw new RuntimeException("Transfer failed: " + ethSendTransaction.getError().getMessage());
         }
         checkTxHash(ethSendTransaction.getTransactionHash(), BSC_NETWORK_SERVICE);
     }
 
     @SneakyThrows
-    private static void bscSimpleERC20Transfer(){
+    private static void bscSimpleERC20Transfer() {
         BigInteger gasPrice = BSC_NETWORK_SERVICE.ethGasPrice().sendAsync().get().getGasPrice();
         BigInteger nonce = BSC_NETWORK_SERVICE.ethGetTransactionCount(CREDENTIALS.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get().getTransactionCount();
         BigInteger value = Convert.toWei("10000", Convert.Unit.ETHER).toBigInteger();
         EthSendTransaction ethSendTransaction = BSC_NETWORK_SERVICE.simpleTransfer(CREDENTIALS, TO_ADDRESS, gasPrice, BigInteger.valueOf(64000), nonce, value, BSC_CONTRACT, null);
         log.info("Tx hash: {}", ethSendTransaction.getTransactionHash());
-        if(Objects.isNull(ethSendTransaction.getTransactionHash())){
+        if (Objects.isNull(ethSendTransaction.getTransactionHash())) {
             throw new RuntimeException("Transfer failed: " + ethSendTransaction.getError().getMessage());
         }
         checkTxHash(ethSendTransaction.getTransactionHash(), BSC_NETWORK_SERVICE);
@@ -92,44 +93,44 @@ public class Web3jNetworkServiceSimpleDemo {
 
 
     @SneakyThrows
-    private static void polygonSimpleTransfer(){
+    private static void polygonSimpleTransfer() {
         BigInteger gasPrice = POLYGON_NETWORK_SERVICE.ethGasPrice().sendAsync().get().getGasPrice();
         BigInteger nonce = POLYGON_NETWORK_SERVICE.ethGetTransactionCount(CREDENTIALS.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get().getTransactionCount();
         BigInteger value = Convert.toWei("0.1", Convert.Unit.ETHER).toBigInteger();
         EthSendTransaction ethSendTransaction = POLYGON_NETWORK_SERVICE.simpleTransfer(CREDENTIALS, TO_ADDRESS, gasPrice, BigInteger.valueOf(21000), nonce, value, POLYGON_NETWORK_SERVICE.getChainId());
         log.info("Tx hash: {}", ethSendTransaction.getTransactionHash());
-        if(Objects.isNull(ethSendTransaction.getTransactionHash())){
+        if (Objects.isNull(ethSendTransaction.getTransactionHash())) {
             throw new RuntimeException("Transfer failed: " + ethSendTransaction.getError().getMessage());
         }
         checkTxHash(ethSendTransaction.getTransactionHash(), POLYGON_NETWORK_SERVICE);
     }
 
     @SneakyThrows
-    private static void polygonSimpleERC20Transfer(){
+    private static void polygonSimpleERC20Transfer() {
         BigInteger gasPrice = POLYGON_NETWORK_SERVICE.ethGasPrice().sendAsync().get().getGasPrice();
         BigInteger nonce = POLYGON_NETWORK_SERVICE.ethGetTransactionCount(CREDENTIALS.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get().getTransactionCount();
         BigInteger value = Convert.toWei("10000", Convert.Unit.ETHER).toBigInteger();
         EthSendTransaction ethSendTransaction = POLYGON_NETWORK_SERVICE.simpleTransfer(CREDENTIALS, TO_ADDRESS, gasPrice, BigInteger.valueOf(64000), nonce, value, POLYGON_CONTRACT, POLYGON_NETWORK_SERVICE.getChainId());
         log.info("Tx hash: {}", ethSendTransaction.getTransactionHash());
-        if(Objects.isNull(ethSendTransaction.getTransactionHash())){
+        if (Objects.isNull(ethSendTransaction.getTransactionHash())) {
             throw new RuntimeException("Transfer failed: " + ethSendTransaction.getError().getMessage());
         }
         checkTxHash(ethSendTransaction.getTransactionHash(), POLYGON_NETWORK_SERVICE);
     }
 
     @SneakyThrows
-    private static void simpleEIP1559Transfer(){
+    private static void simpleEIP1559Transfer() {
         TransactionReceipt receipt = POLYGON_NETWORK_SERVICE.simpleEIP1559Transfer(CREDENTIALS, TO_ADDRESS, new BigDecimal("1"), Convert.Unit.ETHER);
         log.info(receipt.getTransactionHash());
         log.info("Tx : {}", receipt.isStatusOK() ? "succeed" : "failed ");
     }
 
     @SneakyThrows
-    private static void polygonSimpleErc20EIP1559Transfer(){
+    private static void polygonSimpleErc20EIP1559Transfer() {
         BigInteger nonce = POLYGON_NETWORK_SERVICE.ethGetTransactionCount(CREDENTIALS.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get().getTransactionCount();
         EthSendTransaction ethSendTransaction = POLYGON_NETWORK_SERVICE.simpleEIP1559Transfer(POLYGON_CONTRACT, CREDENTIALS, TO_ADDRESS, BigDecimal.valueOf(10000), Convert.Unit.ETHER, BigInteger.valueOf(64000), nonce);
         log.info("Tx hash: {}", ethSendTransaction.getTransactionHash());
-        if(Objects.isNull(ethSendTransaction.getTransactionHash())){
+        if (Objects.isNull(ethSendTransaction.getTransactionHash())) {
             throw new RuntimeException("Transfer failed: " + ethSendTransaction.getError().getMessage());
         }
         checkTxHash(ethSendTransaction.getTransactionHash(), POLYGON_NETWORK_SERVICE);
