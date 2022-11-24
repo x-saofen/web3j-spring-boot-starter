@@ -6,7 +6,7 @@
 
     <groupId>io.web3service</groupId>
     <artifactId>web3j-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>web3j-spring-boot-starter</name>
     <description>web3j for spring boot</description>
     <url>https://github.com/x-saofen/web3j-spring-boot-starter</url>
@@ -87,7 +87,6 @@
 
     <build>
         <plugins>
-            <!-- 要生成Javadoc和Source jar文件，您必须配置javadoc和源Maven插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -114,7 +113,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 必须配置GPG插件用于使用以下配置对组件进行签名 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>

@@ -28,7 +28,7 @@ pom dependency
 <dependency>
     <groupId>io.web3service</groupId>
     <artifactId>web3j-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 <dependency>
    <groupId>com.squareup.okhttp3</groupId>

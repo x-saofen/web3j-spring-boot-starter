@@ -289,7 +289,7 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
      */
     @SneakyThrows(Exception.class)
     private BigInteger getDefaultMaxFeePerGas(BigInteger baseFeePerGas, BigInteger maxPriorityFeePerGas) {
-        return baseFeePerGas.multiply(BigInteger.valueOf(2)).add(maxPriorityFeePerGas);
+        return baseFeePerGas.add(maxPriorityFeePerGas);
     }
 
     /**
