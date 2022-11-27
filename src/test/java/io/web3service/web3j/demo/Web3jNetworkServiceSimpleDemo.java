@@ -1,6 +1,8 @@
 package io.web3service.web3j.demo;
 
 
+import io.web3service.web3j.contract.BaseErc20Contract;
+import io.web3service.web3j.contract.ContractClient;
 import io.web3service.web3j.core.Web3jNetworkService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +35,7 @@ public class Web3jNetworkServiceSimpleDemo {
     static Credentials CREDENTIALS = Credentials.create("you private key");
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
     }
 
     private static void bscReadFunctions() {
@@ -44,6 +46,17 @@ public class Web3jNetworkServiceSimpleDemo {
         log.info("#### ERC20 Contract totalSupply: {}", BSC_NETWORK_SERVICE.getErc20ContractTotalSupply(BSC_CONTRACT));
         log.info("#### ERC20 Contract balances: {}", BSC_NETWORK_SERVICE.getErc20ContractBalancesOf(BSC_CONTRACT, TO_ADDRESS));
     }
+
+    @SneakyThrows
+    private static void bscLoadContract() {
+        BaseErc20Contract erc20Contract = ContractClient.loadContract(BSC_NETWORK_SERVICE, BSC_CONTRACT, BaseErc20Contract.class);
+        log.info("#### ERC20 Contract name: {}", erc20Contract.name().send());
+        log.info("#### ERC20 Contract symbol: {}", erc20Contract.symbol().send());
+        log.info("#### ERC20 Contract decimals: {}", erc20Contract.decimals().send());
+        log.info("#### ERC20 Contract totalSupply: {}", erc20Contract.totalSupply().send());
+        log.info("#### ERC20 Contract balances: {}", erc20Contract.balanceOf(TO_ADDRESS).send());
+    }
+
 
     private static void polygonReadFunctions() {
         log.info("#### Chain Id: {}", POLYGON_NETWORK_SERVICE.getChainId());
@@ -135,5 +148,6 @@ public class Web3jNetworkServiceSimpleDemo {
         }
         checkTxHash(ethSendTransaction.getTransactionHash(), POLYGON_NETWORK_SERVICE);
     }
+
 
 }

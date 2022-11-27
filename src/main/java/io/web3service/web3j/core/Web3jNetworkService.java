@@ -126,10 +126,10 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
      * @param contractAddress contract address
      * @return String name
      */
-    public String getContractName(String contractAddress) {
+    public Optional<String> getContractName(String contractAddress) {
         final List<Type> types = simpleReadFunction(contractAddress, Constant.NAME, new TypeReference<Utf8String>() {
         });
-        return CollectionUtils.isEmpty(types) ? Constant.EMPTY : types.get(0).getValue().toString();
+        return CollectionUtils.isEmpty(types) ? Optional.empty() : Optional.of(types.get(0).getValue().toString());
     }
 
     /**
@@ -138,10 +138,10 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
      * @param contractAddress contract address
      * @return String symbol
      */
-    public String getErc20ContractSymbol(String contractAddress) {
+    public Optional<String> getErc20ContractSymbol(String contractAddress) {
         final List<Type> types = simpleReadFunction(contractAddress, Constant.SYMBOL, new TypeReference<Utf8String>() {
         });
-        return CollectionUtils.isEmpty(types) ? Constant.EMPTY : types.get(0).getValue().toString();
+        return CollectionUtils.isEmpty(types) ? Optional.empty() : Optional.of(types.get(0).getValue().toString());
     }
 
     /**
@@ -345,6 +345,23 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
         BigInteger defaultMaxFeePerGas = getDefaultMaxFeePerGas(baseFeePerGas, maxPriorityFeePerGas);
         RawTransaction rawTransaction = RawTransaction.createTransaction(getChainId(), nonce, gasLimit, contractAddress, BigInteger.ZERO, encodedFunction, maxPriorityFeePerGas, defaultMaxFeePerGas);
         return sendTransaction(rawTransaction, credentials, getChainId());
+    }
+
+
+    /**
+     *  get contract binary
+     * @param contractAddress  contract Address
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @SneakyThrows({ExecutionException.class, InterruptedException.class})
+    public Optional<String> getContractBinary(String contractAddress) {
+        EthGetCode ethGetCode = ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+        if(Objects.nonNull(ethGetCode) && Objects.nonNull(ethGetCode.getCode())){
+            return Optional.of(ethGetCode.getCode());
+        }
+        return Optional.empty();
     }
 
 }
