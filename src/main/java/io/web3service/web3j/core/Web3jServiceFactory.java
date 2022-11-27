@@ -51,6 +51,7 @@ public class Web3jServiceFactory {
     /**
      * copy www.web3labs.com
      * @param clientAddress network address
+     * @param timeout   timeout
      * @see <a href="https://github.com/web3j/web3j-spring-boot-starter/blob/master/src/main/java/org/web3j/spring/autoconfigure/Web3jAutoConfiguration.java">Source code address</a>
      * @return  Web3jService
      */

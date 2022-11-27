@@ -352,8 +352,6 @@ public class Web3jNetworkService extends JsonRpc2_0Web3j {
      *  get contract binary
      * @param contractAddress  contract Address
      * @return
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public Optional<String> getContractBinary(String contractAddress) {

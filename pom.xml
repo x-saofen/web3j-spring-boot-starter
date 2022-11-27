@@ -6,7 +6,7 @@
 
     <groupId>io.web3service</groupId>
     <artifactId>web3j-spring-boot-starter</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>web3j-spring-boot-starter</name>
     <description>web3j for spring boot</description>
     <url>https://github.com/x-saofen/web3j-spring-boot-starter</url>
