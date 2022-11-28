@@ -22,7 +22,7 @@ public class ContractClient {
     @SneakyThrows({NoSuchMethodException.class, InvocationTargetException.class , InstantiationException.class, IllegalAccessException.class})
     public static <T> T loadContract(Web3jNetworkService web3j, String contractAddress, Class<? extends Contract> type)  {
         Optional<String> contractBinary = web3j.getContractBinary(contractAddress);
-        Assert.isTrue(contractBinary.isPresent(), "Failed to get contract bytecode.");
+        Assert.isTrue(contractBinary.isPresent(), "Failed to get "+ contractAddress +" contract bytecode.");
         Constructor<? extends Contract> constructor = type.getConstructor(String.class, String.class, Web3j.class, TransactionManager.class, ContractGasProvider.class);
         return (T) constructor.newInstance(contractBinary.get(), contractAddress, web3j, new ReadonlyTransactionManager(web3j, contractAddress), new DefaultGasProvider());
     }
